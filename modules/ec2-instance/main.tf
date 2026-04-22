@@ -12,7 +12,12 @@ resource "aws_instance" "this" {
   ami                  = data.aws_ami.amazon_linux_2023.id
   instance_type        = var.instance_type
   iam_instance_profile = var.iam_instance_profile
-  subnet_id            = var.subnet_id
+
+  # Find the specific subnet ID created by the networking module
+  # that matches the current key (e.g., "public-1")
+  subnet_id = var.subnet_id
+
+  #subnet_id            = var.subnet_id
   vpc_security_group_ids = var.vpc_security_group_ids
   user_data = var.user_data
 
@@ -20,3 +25,4 @@ resource "aws_instance" "this" {
     Name = var.instance_name
   }
 }
+

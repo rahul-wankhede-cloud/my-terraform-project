@@ -71,6 +71,7 @@ output "debug_profile_name" {
 module "my_network" {
   source           = "./modules/networking"
   environment_name = "Lab"
+  public_subnets = var.public_subnets
   vpc_cidr         = "10.0.0.0/16"
 }
 
@@ -82,12 +83,17 @@ module "my_security_group" {
 
 module "my_ec2_instance" {
   source               = "./modules/ec2-instance"
-  instance_name        = "Custom-VPC-Server"
+  for_each                = var.public_subnets
+  instance_name        = "Custom-VPC-Server-${each.key}"
   instance_type        = var.ec2_instance_type # Get the value from terraform.tfvars and hand it over to ec2-instance
   iam_instance_profile = module.my_iam_role.instance_profile_name
   
   # Now we use the ID from our OWN module!
-  subnet_id            = module.my_network.public_subnet_id 
+  #subnet_id            = module.my_network.public_subnet_id 
+
+  # Find the specific subnet ID created by the networking module
+  # that matches the current key (e.g., "public-1")
+  subnet_id = module.my_network.public_subnet_ids_map[each.key]
   vpc_security_group_ids = [module.my_security_group.security_group_id] # hand over data to ec2-instance module
   user_data = <<-EOF
               #!/bin/bash
@@ -98,3 +104,22 @@ module "my_ec2_instance" {
               echo "<h1>Hello from my Custom VPC at $(hostname -f)</h1>" > /var/www/html/index.html
               EOF
 }
+
+output "final_instance_ids" {
+  value = [for instance in module.my_ec2_instance : instance.instance_id]  # module.my_ec2_instance is a Map
+}
+
+  module "my_alb" {
+  source             = "./modules/alb"        # Path to your ALB code
+  vpc_id             = module.my_network.vpc_id
+  alb_sg_id         = [module.my_security_group.alb_security_group_id]
+  
+  # Pass the list of subnet IDs from your networking loop
+  public_subnet_ids  = module.my_network.public_subnet_ids
+  # This creates the list: ["i-123", "i-456"]# This creates the list: ["i-123", "i-456"]
+  # Pass the list of EC2 IDs so they can be added to the Target Group
+  # We use 'values' to convert the map of instances into a list of IDs
+  
+  instance_ids       = [for instance in module.my_ec2_instance : instance.instance_id]
+  
+} 

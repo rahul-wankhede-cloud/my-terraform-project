@@ -13,3 +13,11 @@ variable "aws_profile" {
   type        = string
   description = "The AWS profile to use"
 }
+
+variable "public_subnets" {
+  type = map(object({
+    cidr = string
+    az   = string
+  }))
+  description = "Map of public subnets defined in terraform.tfvars"
+}

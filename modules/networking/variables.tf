@@ -11,3 +11,14 @@ variable "public_subnet_cidr" {
 variable "environment_name" {
   type = string
 }
+
+variable "public_subnets" {
+  type = map(object({
+    cidr = string
+    az   = string
+  }))
+}
+
+/* variable "route_table_id" {
+  type    = string
+} */
