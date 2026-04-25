@@ -71,3 +71,56 @@ resource "aws_route_table_association" "public" {
   subnet_id      = each.value.id # This automatically finds the ID for each subnet in the loop
   route_table_id = aws_route_table.public_rt.id
 }
+
+# The Private subnet
+resource "aws_subnet" "private" {
+  for_each                = var.private_subnets
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value.cidr
+  availability_zone       = each.value.az
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "Private-Subnet-${each.key}"
+  }
+}
+
+#  Request a Public Static IP from AWS
+resource "aws_eip" "nat" {
+  domain = "vpc"
+  
+  tags = {
+    Name = "nat-gateway-eip"
+  }
+}
+# NAT Gateway
+resource "aws_nat_gateway" "ngw" {
+    allocation_id = aws_eip.nat.id
+    subnet_id = aws_subnet.public["public-1"].id
+
+  tags = {
+    Name = "${var.environment_name}-ngw"
+  }
+}
+
+# 4. Route Table (The Rules of the Road)
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0" # All traffic...
+    nat_gateway_id = aws_nat_gateway.ngw.id # ...goes to the Internet
+  }
+
+  tags = {
+    Name = "${var.environment_name}-private-rt"
+  }
+}
+
+# The Route Table Association Loop
+# Associate both subnets to this same table to save cost on NAT gateway. We are going to use just Single NAT gateway.
+resource "aws_route_table_association" "private" {
+  for_each       = aws_subnet.private
+  subnet_id      = each.value.id # This automatically finds the ID for each subnet in the loop
+  route_table_id = aws_route_table.private_rt.id
+}

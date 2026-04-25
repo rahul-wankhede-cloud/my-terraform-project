@@ -1,6 +1,6 @@
 variable "instance_name" {
   type        = string
-  description = "The Name tag for the EC2 instance"
+  description = "The Name tag for the Bastion EC2 instance"
 }
 
 variable "instance_type" {
@@ -25,8 +25,12 @@ variable "vpc_security_group_ids" {
   default     = []
 }
 
-variable "user_data" {
-  description = "The script to run on boot"
+variable "security_groups" {
+  description = "List of security group IDs to associate with the instance"
+ type        = string
+}
+
+variable "vpc_id" {
   type        = string
-  default     = null
+  description = "The ID of the custom VPC"
 }

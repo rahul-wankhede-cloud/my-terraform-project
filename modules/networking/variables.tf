@@ -19,6 +19,12 @@ variable "public_subnets" {
   }))
 }
 
+variable "private_subnets" {
+  type = map(object({
+    cidr = string
+    az   = string
+  }))
+}
 /* variable "route_table_id" {
   type    = string
 } */

@@ -22,7 +22,7 @@ module "my_iam_role" {
   #create_instance_profile = true
     # We take the ARN from the data source and pass it in
   s3_bucket_arn = data.aws_s3_bucket.my_lab_bucket.arn
-
+  
 }
 
 output "aws_iam_role_arn" {
@@ -72,6 +72,7 @@ module "my_network" {
   source           = "./modules/networking"
   environment_name = "Lab"
   public_subnets = var.public_subnets
+  private_subnets = var.private_subnets
   vpc_cidr         = "10.0.0.0/16"
 }
 
@@ -79,6 +80,7 @@ module "my_security_group" {
   source               = "./modules/security"
   environment_name = "Lab"
   vpc_id = module.my_network.vpc_id
+  bastion_security_group_id  = module.bastion_jump_host.bastion_security_group_id
 }
 
 module "my_ec2_instance" {
@@ -87,7 +89,7 @@ module "my_ec2_instance" {
   instance_name        = "Custom-VPC-Server-${each.key}"
   instance_type        = var.ec2_instance_type # Get the value from terraform.tfvars and hand it over to ec2-instance
   iam_instance_profile = module.my_iam_role.instance_profile_name
-  
+    
   # Now we use the ID from our OWN module!
   #subnet_id            = module.my_network.public_subnet_id 
 
@@ -123,3 +125,44 @@ output "final_instance_ids" {
   instance_ids       = [for instance in module.my_ec2_instance : instance.instance_id]
   
 } 
+
+module "my_db_instance" {
+  source               = "./modules/database"
+  instance_class = var.db_instance_class
+  identifier = var.db_identifier  
+  password = var.db_password
+  username = var.db_username
+  vpc_security_group_ids = [module.my_security_group.database_security_group_id]
+  #private_subnet_ids  = module.my_network.private_subnet_ids
+  subnet_ids = values(module.my_network.private_subnet_ids)
+  security_group_ids = [module.my_security_group.eice_security_group_id]
+}
+
+# This is for bastion server
+module "bastion_jump_host" {
+  source    = "./modules/bastion"
+  subnet_id = module.my_network.private_subnet_ids["private-1"] # Use a private subnet here!
+  vpc_id    = module.my_network.vpc_id
+  instance_name        = "Bastion-Server"
+  instance_type        = var.bastion_instance_type
+  security_groups  = module.my_security_group.database_security_group_id
+  }
+
+  output "security_groups" {
+  value = [module.my_security_group.database_security_group_id] # o/p:security_groups = "sg-0f7d96b5f4f252a3b"
+
+}
+
+ output "security_groups-1" {
+  value = module.my_security_group.database_security_group_id # module.my_ec2_instance is a Map
+}
+
+module "iam_ssm_access" {
+  source = "./modules/ssm-access"
+  aws_region = var.aws_region
+  target_instance_arn = module.bastion_jump_host.instance_arn
+  users = var.target_users
+  groups = var.target_groups
+
+
+}
