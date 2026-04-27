@@ -65,3 +65,14 @@ variable "target_groups" {
   default     = []
 }
 variable "aws_region"     { type = string }
+variable "environment"     { type = string }
+
+variable "patch_groups" {
+  type = map(object({
+    schedule = string
+  }))
+  default = {
+    "Web" = { schedule = "cron(0 2 ? * SUN *)" }
+    "DB" = { schedule = "cron(0 3 ? * SAT *)" }
+  }
+}

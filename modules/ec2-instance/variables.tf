@@ -30,3 +30,9 @@ variable "user_data" {
   type        = string
   default     = null
 }
+
+variable "patch_group" {
+  type        = string
+  description = "The SSM Patch Group this instance should belong to"
+  default     = "Unassigned" # Or a common default like "General"
+}

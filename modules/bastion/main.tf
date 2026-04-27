@@ -23,6 +23,7 @@ resource "aws_instance" "bastion" {
 
   tags = {
     Name = var.instance_name
+    PatchGroup = var.patch_group
   }
 }
 

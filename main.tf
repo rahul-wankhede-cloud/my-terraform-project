@@ -55,7 +55,7 @@ data "aws_subnets" "default" {
   }
 } */
 /* 
-module "my_ec2_instance" {
+module "web_servers" {
   source               = "./modules/ec2-instance"
   instance_name        = "Terraform-Lab-Server"
   instance_type        = var.ec2_instance_type # Passed from root variables
@@ -83,12 +83,13 @@ module "my_security_group" {
   bastion_security_group_id  = module.bastion_jump_host.bastion_security_group_id
 }
 
-module "my_ec2_instance" {
+module "web_servers" {
   source               = "./modules/ec2-instance"
   for_each                = var.public_subnets
   instance_name        = "Custom-VPC-Server-${each.key}"
   instance_type        = var.ec2_instance_type # Get the value from terraform.tfvars and hand it over to ec2-instance
   iam_instance_profile = module.my_iam_role.instance_profile_name
+  patch_group = "Web-${var.environment}"
     
   # Now we use the ID from our OWN module!
   #subnet_id            = module.my_network.public_subnet_id 
@@ -108,7 +109,7 @@ module "my_ec2_instance" {
 }
 
 output "final_instance_ids" {
-  value = [for instance in module.my_ec2_instance : instance.instance_id]  # module.my_ec2_instance is a Map
+  value = [for instance in module.web_servers : instance.instance_id]  # module.web_servers is a Map
 }
 
   module "my_alb" {
@@ -122,7 +123,7 @@ output "final_instance_ids" {
   # Pass the list of EC2 IDs so they can be added to the Target Group
   # We use 'values' to convert the map of instances into a list of IDs
   
-  instance_ids       = [for instance in module.my_ec2_instance : instance.instance_id]
+  instance_ids       = [for instance in module.web_servers : instance.instance_id]
   
 } 
 
@@ -146,6 +147,7 @@ module "bastion_jump_host" {
   instance_name        = "Bastion-Server"
   instance_type        = var.bastion_instance_type
   security_groups  = module.my_security_group.database_security_group_id
+  patch_group = "Web-${var.environment}"
   }
 
   output "security_groups" {
@@ -154,7 +156,7 @@ module "bastion_jump_host" {
 }
 
  output "security_groups-1" {
-  value = module.my_security_group.database_security_group_id # module.my_ec2_instance is a Map
+  value = module.my_security_group.database_security_group_id # module.web_servers is a Map
 }
 
 module "iam_ssm_access" {
@@ -163,6 +165,12 @@ module "iam_ssm_access" {
   target_instance_arn = module.bastion_jump_host.instance_arn
   users = var.target_users
   groups = var.target_groups
+}
 
-
+module "patching" {
+  for_each         = var.patch_groups # Loops through every group in the map
+  source           = "./modules/ssm_patching"
+  patch_group_name = "${each.key}-${var.environment}"
+  scan_schedule    = each.value.schedule
+  environment = var.environment
 }

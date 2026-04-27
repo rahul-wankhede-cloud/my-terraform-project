@@ -34,3 +34,8 @@ variable "vpc_id" {
   type        = string
   description = "The ID of the custom VPC"
 }
+
+variable "patch_group" {
+  type        = string
+  description = "The size of the instance (e.g., t2.micro)"
+}
