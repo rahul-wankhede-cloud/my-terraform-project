@@ -12,7 +12,7 @@ provider "aws" {
   profile = var.aws_profile
 }
 
-data "aws_s3_bucket" "my_lab_bucket" {
+ data "aws_s3_bucket" "my_lab_bucket" {
   bucket = var.target_bucket_name #Variable value hard coded in tfvars
 }
 
@@ -42,7 +42,7 @@ module "lambda_role" {
   s3_bucket_arn   = data.aws_s3_bucket.my_lab_bucket.arn
 }
 
-/* # 1. Find the Default VPC
+/*# 1. Find the Default VPC
 data "aws_vpc" "default" {
   default = true
 }
@@ -53,8 +53,8 @@ data "aws_subnets" "default" {
     name   = "vpc-id" #This is the specific attribute AWS uses to identify which VPC a subnet belongs to.
     values = [data.aws_vpc.default.id] #This is a list of values you want to match.e.g., vpc-0a1b2c3d...
   }
-} */
-/* 
+}*/
+/*
 module "web_servers" {
   source               = "./modules/ec2-instance"
   instance_name        = "Terraform-Lab-Server"
@@ -65,7 +65,7 @@ module "web_servers" {
 
 output "debug_profile_name" {
   value = module.my_iam_role.instance_profile_name
-} */
+}*/
 
 
 module "my_network" {
@@ -126,7 +126,7 @@ output "final_instance_ids" {
   instance_ids       = [for instance in module.web_servers : instance.instance_id]
   
 } 
-
+/* 
 module "my_db_instance" {
   source               = "./modules/database"
   instance_class = var.db_instance_class
@@ -137,7 +137,7 @@ module "my_db_instance" {
   #private_subnet_ids  = module.my_network.private_subnet_ids
   subnet_ids = values(module.my_network.private_subnet_ids)
   security_group_ids = [module.my_security_group.eice_security_group_id]
-}
+} */
 
 # This is for bastion server
 module "bastion_jump_host" {
@@ -173,4 +173,12 @@ module "patching" {
   patch_group_name = "${each.key}-${var.environment}"
   scan_schedule    = each.value.schedule
   environment = var.environment
+}
+
+
+module "ssm_dhmc" {
+  source = "./modules/ssm-dhmc"
+  
+  # If you added variables to your module (like region), 
+  # pass them here. If not, just the source is enough.
 }
