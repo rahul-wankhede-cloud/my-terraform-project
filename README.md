@@ -89,9 +89,16 @@ Terraform state is managed remotely using an S3 backend with native state lockin
 ### Application Layer
 
 * Application Load Balancer
-* EC2 instances
+* Auto Scaling Group (ASG)
+* EC2 instances deployed through ASG
 * Security groups
-* IAM roles
+* IAM roles and instance permissions
+
+The Auto Scaling Group provides:
+  
+ * Automatic instance replacement
+ * Improved application availability
+ * Dynamic scaling capability based on CloudWatch metrics
 
 ### Database Layer
 
@@ -100,11 +107,22 @@ Terraform state is managed remotely using an S3 backend with native state lockin
 * Database security group
 * Restricted access from application tier only
 
-### Monitoring
+Database connectivity is controlled using security group references:
+```
+Application Security Group
+          |
+          | 
+          TCP 3306
+          |
+Database Security Group
+```
+### Monitoring And Alerting
 
 * CloudWatch Logs
 * CloudWatch Alarms
 * SNS notifications
+
+CloudWatch alarms are configured to monitor infrastructure metrics and trigger notifications through SNS when defined thresholds are exceeded.
 
 ---
 
