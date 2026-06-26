@@ -124,6 +124,17 @@ Database Security Group
 
 CloudWatch alarms are configured to monitor infrastructure metrics and trigger notifications through SNS when defined thresholds are exceeded.
 
+### High Availability Design
+
+The application tier is designed for resiliency using:
+
+* Application Load Balancer
+* Auto Scaling Group
+* Health checks
+* Multiple availability zones
+
+If an application instance becomes unhealthy, the Auto Scaling Group can replace it automatically.
+
 ---
 
 ## Terraform Design
