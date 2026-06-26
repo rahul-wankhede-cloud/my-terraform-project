@@ -1,8 +1,3 @@
-/* 
-1. Create role : aws_iam_role
-2. Create trust policy : assume_role_policy
-3. Create instance profile: aws_iam_instance_profile only if ec2 is the resource
-4. Create s3 specific inline policy: aws_iam_role_policy */
 
 
 resource "aws_iam_role" "this" {
@@ -23,11 +18,6 @@ resource "aws_iam_role" "this" {
   })
 }
 
-# Attach the S3 Read-Only Policy
-/* resource "aws_iam_role_policy_attachment" "s3_read" {
-  role       = aws_iam_role.this.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
-} */
 
 # Create an instance profile to associate with EC2 instances
 
@@ -38,7 +28,7 @@ resource "aws_iam_instance_profile" "this" {
   name = "${var.role_name}-profile"
   role = aws_iam_role.this.name
 }
-
+/* 
 resource "aws_iam_role_policy" "s3_custom_access" {
   name = "S3SpecificBucketAccess"
   role = aws_iam_role.this.id
@@ -59,10 +49,18 @@ resource "aws_iam_role_policy" "s3_custom_access" {
       }
     ]
   })
-}
+} */
 
 /* # 1. Attach the standard SSM Managed Policy
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   role       = aws_iam_role.this.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 } */
+
+resource "aws_iam_role_policy_attachment" "managed" {
+
+  for_each = toset(var.policy_arns)
+
+  role       = aws_iam_role.this.name
+  policy_arn = each.value
+}

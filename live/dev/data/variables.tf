@@ -4,7 +4,7 @@ variable "target_bucket_name" {
   default     = "rahulsfirst-bucket-2026"
 }
 
-variable "ec2_instance_type" {
+variable "instance_type" {
   type        = string
   description = "The size of the instance passed to the child module"
 }
@@ -14,6 +14,10 @@ variable "aws_profile" {
   description = "The AWS profile to use"
 }
 
+variable "ami_id" {
+  type        = string
+  description = "The size of the instance passed to the child module"
+}
 variable "public_subnets" {
   type = map(object({
     cidr = string
@@ -66,6 +70,9 @@ variable "target_groups" {
 }
 variable "aws_region"     { type = string }
 variable "environment"     { type = string }
+variable "project"     { type = string }
+
+
 
 variable "patch_groups" {
   type = map(object({
@@ -75,4 +82,18 @@ variable "patch_groups" {
     "Web" = { schedule = "cron(0 2 ? * SUN *)" }
     "DB" = { schedule = "cron(0 3 ? * SAT *)" }
   }
+}
+
+variable "instance_count" {
+  type        = number
+  description = "The number of ec2 servers"
+}
+
+variable "app_name" {
+  type        = string
+  description = "Name of application"
+}
+
+variable "notification_email" {
+  type = string
 }

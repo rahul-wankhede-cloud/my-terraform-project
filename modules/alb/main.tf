@@ -1,15 +1,21 @@
+locals {
+  create = var.create
+}
+
 resource "aws_lb" "main" {
-  name               = "main-alb"
+  count = local.create ? 1 : 0
   internal           = false
-  load_balancer_type = "application"
+  load_balancer_type = var.load_balancer_type
   security_groups = var.alb_sg_id  ## Its defined as list in variables.tf, so dont put in [var.alb_sg_id] else it will create list of list and will throw erroraccess_logs {
-  
+  tags = merge(var.tags, { Name = var.name})
+  name = var.name
   #security_groups    = var.alb_security_group_id
   # This uses the list of subnet IDs we created with the loop!
-  subnets            = var.public_subnet_ids 
+  subnets            = var.subnets
 }
 
 resource "aws_lb_target_group" "main" {
+  count = local.create ? 1 : 0
   name     = "main-target-group"
   port     = 80
   protocol = "HTTP"
@@ -17,21 +23,21 @@ resource "aws_lb_target_group" "main" {
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.main.arn
+  count = local.create ? 1 : 0
+  load_balancer_arn = aws_lb.main[0].arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
+    target_group_arn = aws_lb_target_group.main[0].arn
   }
 }
-resource "aws_lb_target_group_attachment" "web_attachment" {
+
+/* resource "aws_lb_target_group_attachment" "web_attachment" {
   # 'count' tells Terraform to run this block once for every ID in the list
   count            = length(var.instance_ids)
-  #for_each         = module.my_ec2_instance # Loop through the instances you just created (from Root module)
-  target_group_arn = aws_lb_target_group.main.arn
+  target_group_arn = aws_lb_target_group.main[0].arn
   target_id        = var.instance_ids[count.index]
-  #target_id        = each.value.instance_id # This comes from your EC2 module output
   port             = 80
-}
+} */

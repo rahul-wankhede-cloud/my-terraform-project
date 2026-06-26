@@ -14,7 +14,34 @@ variable "iam_instance_profile" {
   default     = null
 }
 
-variable "subnet_id" {
-  type        = string
+variable "subnet_ids" {
+  type        = list(string)
   description = "The subnet to launch the instance in"
+}
+
+variable "vpc_security_group_ids" {
+  description = "List of security group IDs to associate with the instance"
+  type        = list(string)
+  default     = []
+}
+
+variable "user_data" {
+  description = "The script to run on boot"
+  type        = string
+  default     = null
+}
+
+variable "patch_group" {
+  type        = string
+  description = "The SSM Patch Group this instance should belong to"
+  default     = "Unassigned" # Or a common default like "General"
+}
+
+variable "create" {
+  type        = bool
+  default = false
+}
+
+variable "instance_count" {
+  type = number
 }

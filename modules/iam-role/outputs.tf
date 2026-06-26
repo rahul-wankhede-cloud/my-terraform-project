@@ -1,6 +1,11 @@
 output "role_arn" {
   value = aws_iam_role.this.arn
 }
+
+output "role_name" {
+  value = aws_iam_role.this.name
+}
+
 output "instance_profile_name" {
   #value       = aws_iam_instance_profile.this.name
   # This returns the first item if created, or null if not.
@@ -16,4 +21,5 @@ output "bucket_arn_received" {
   value       = var.s3_bucket_arn
   description = "The ARN of the instance profile"
 }
+
 

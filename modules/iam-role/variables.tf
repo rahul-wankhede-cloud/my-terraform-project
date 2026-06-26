@@ -20,3 +20,8 @@ variable "create_instance_profile" {
   description = "Set to true only if this role is for an EC2 instance"
   default     = false
 }
+
+variable "policy_arns" {
+  type = list(string)
+  default = []
+}
