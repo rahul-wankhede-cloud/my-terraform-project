@@ -175,49 +175,100 @@ Benefits:
 
 ## Deployment
 
-Initialize Terraform:
+This project includes helper scripts to simplify infrastructure lifecycle management.
+
+### Create Infrastructure
+
+The `create.sh` script deploys the infrastructure in the correct order.
+
+Run:
 
 ```bash
-terraform init
+./create.sh
 ```
 
-Validate configuration:
+The deployment flow:
+
+1. Deploy platform stack:
+
+   * VPC
+   * Networking
+   * ALB
+   * EC2
+   * Application security group
+
+2. Deploy data stack:
+
+   * Database security group
+   * RDS instance
+
+The data stack consumes outputs from the platform stack using Terraform remote state.
+
+---
+
+### Destroy Infrastructure
+
+The `destroy.sh` script removes resources in the correct dependency order.
+
+Run:
 
 ```bash
-terraform validate
+./destroy.sh
 ```
-
-Create execution plan:
-
-```bash
-terraform plan
-```
-
-Deploy infrastructure:
-
-```bash
-terraform apply
-```
-
-Destroy infrastructure:
 
 Destroy order:
 
 1. Data stack
 
-```bash
-cd live/data
-terraform destroy
-```
+   Removes:
+
+   * RDS
+   * Database security group rules
+   * Database security group
 
 2. Platform stack
 
-```bash
-cd ../platform
-terraform destroy
-```
+   Removes:
+
+   * EC2
+   * ALB
+   * Application security group
+   * Networking resources
+   * VPC
+
+Destroying in this order prevents dependency issues caused by cross-stack references.
 
 ---
+
+### Manual Terraform Commands
+
+If required, Terraform can also be executed manually:
+
+Initialize:
+
+```bash
+terraform init
+```
+
+Validate:
+
+```bash
+terraform validate
+```
+
+Plan:
+
+```bash
+terraform plan
+```
+
+Apply:
+
+```bash
+terraform apply
+```
+----
+
 
 ## Security Design
 
