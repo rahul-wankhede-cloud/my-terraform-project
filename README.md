@@ -45,24 +45,95 @@ Terraform state is managed remotely using an S3 backend with native state lockin
 
 ---
 
+## Environments
+
+This project supports:
+
+- dev
+- qa
+- prod
+
+Each environment has isolated Terraform state:
+
+dev:
+s3://bucket/dev/platform/terraform.tfstate
+
+qa:
+s3://bucket/qa/platform/terraform.tfstate
+
+prod:
+s3://bucket/prod/platform/terraform.tfstate
+
+---
+
 ## Project Structure
 
 ```
-.
-├── live
-    ├── create.sh
-    ├── destroy.sh 
-│   ├── platform
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   ├── outputs.tf
-│   │   └── backend.tf
+my-terraform-project/
+│
+├── README.md
+├── create.sh
+├── destroy.sh
+├── .gitignore
+│
+├── live/
 │   │
-│   └── data
-│       ├── main.tf
-│       ├── variables.tf
-│       ├── outputs.tf
-│       └── backend.tf
+│   ├── dev/
+│   │   │
+│   │   ├── platform/
+│   │   │   ├── backend.tf
+│   │   │   ├── main.tf
+│   │   │   ├── variables.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── providers.tf
+│   │   │   └── terraform.tfvars        (ignored)
+│   │   │
+│   │   └── data/
+│   │       ├── backend.tf
+│   │       ├── main.tf
+│   │       ├── variables.tf
+│   │       ├── outputs.tf
+│   │       ├── providers.tf
+│   │       └── terraform.tfvars        (ignored)
+│   │
+│   │
+│   ├── qa/
+│   │   │
+│   │   ├── platform/
+│   │   │   ├── backend.tf
+│   │   │   ├── main.tf
+│   │   │   ├── variables.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── providers.tf
+│   │   │   └── terraform.tfvars        (ignored)
+│   │   │
+│   │   └── data/
+│   │       ├── backend.tf
+│   │       ├── main.tf
+│   │       ├── variables.tf
+│   │       ├── outputs.tf
+│   │       ├── providers.tf
+│   │       └── terraform.tfvars        (ignored)
+│   │
+│   │
+│   └── prod/
+│       │
+│       ├── platform/
+│       │   ├── backend.tf
+│       │   ├── main.tf
+│       │   ├── variables.tf
+│       │   ├── outputs.tf
+│       │   ├── providers.tf
+│       │   └── terraform.tfvars        (ignored)
+│       │
+│       └── data/
+│           ├── backend.tf
+│           ├── main.tf
+│           ├── variables.tf
+│           ├── outputs.tf
+│           ├── providers.tf
+│           └── terraform.tfvars        (ignored)
+│
 │
 └── modules
     ├── networking
@@ -76,6 +147,7 @@ Terraform state is managed remotely using an S3 backend with native state lockin
     ├── cloudwatch
     ├── sns
     └── route53
+
 ```
 
 ---
@@ -313,16 +385,33 @@ terraform apply
 
 ---
 
+## Current Features
+
+- Modular Terraform architecture
+- Separate platform and data stacks
+- Remote Terraform state stored in S3 with locking
+- Multiple environments:
+  - dev
+  - qa
+  - prod
+- Environment-specific Terraform state files
+- Automated create and destroy scripts
+- Application Load Balancer
+- Auto Scaling Group
+- CloudWatch monitoring and alarms
+- SNS notifications
+- RDS database deployment
+- Security groups with least-privilege communication
+
+
 ## Future Enhancements
 
-Planned improvements:
-
-* Multiple environments (dev/qa/prod)
-* GitLab CI/CD pipeline
-* Terraform security scanning
-* Automated infrastructure validation
-* Kubernetes/EKS deployment
-* GitOps workflow using Argo CD
+- GitLab CI/CD pipeline integration
+- Terraform fmt/validate/plan automation
+- Infrastructure security scanning using tools like Checkov/tfsec
+- Secrets management using AWS Secrets Manager or SSM Parameter Store
+- Kubernetes/EKS deployment
+- GitOps workflow using Argo CD
 
 ---
 
