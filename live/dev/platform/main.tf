@@ -283,7 +283,7 @@ module "alarms" {
 module "sns" {
 
   source = "../../../modules/sns"
-  topic_name = "infrastructure-alerts"
+  topic_name = "${var.environment}-infrastructure-alerts"
   email_endpoint = var.notification_email
   tags = local.common_tags
 

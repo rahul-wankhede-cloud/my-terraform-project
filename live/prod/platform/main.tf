@@ -34,7 +34,7 @@ locals {
 terraform {
   backend "s3" {
     bucket = "rahul999-terraform-state"
-    key    = "qa/platform/terraform.tfstate"
+    key    = "prod/platform/terraform.tfstate"
     region = "us-east-2"
     use_lockfile = true
   }
