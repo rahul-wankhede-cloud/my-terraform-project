@@ -18,25 +18,29 @@ Terraform state is managed remotely using an S3 backend with native state lockin
 ## Architecture
 
 ```
-                    Internet
-                       |
-                       |
-                    Route 53
-                       |
-                       |
-                     ALB
-                       |
-              -----------------
-              |               |
-          App EC2          App SG
-              |
-              |
-        TCP 3306 allowed
-              |
-              |
-          RDS MySQL
-              |
-            DB SG
+                      Internet
+                         |
+                     Route 53
+                         |
+                         |
+               +-----------------+
+               |       ALB       |
+               |    (alb_sg)     |
+               +-----------------+
+                         |
+                  Target Group
+                         |
+               +-----------------+
+               |   EC2 Instance  |
+               |    (app_sg)     |
+               +-----------------+
+                         |
+                    TCP 3306
+                         |
+               +-----------------+
+               |   Amazon RDS    |
+               |    (db_sg)      |
+               +-----------------+
 ```
 
 ---
