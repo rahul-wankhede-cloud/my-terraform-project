@@ -108,7 +108,7 @@ resource "aws_vpc_security_group_egress_rule" "app_all_outbound" {
  module "alb" {
   source             = "../../../modules/alb"
   create = true
-  name               = "main-alb"
+  name               = "main-alb-${var.environment}"
   vpc_id             = module.my_network.vpc_id
   alb_sg_id         = [module.alb_sg.security_group_id]
   subnets            = module.my_network.public_subnet_ids
