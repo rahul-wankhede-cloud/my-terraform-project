@@ -20,7 +20,7 @@ locals {
   }
 }
 
-data "terraform_remote_state" "data" {
+/* data "terraform_remote_state" "data" {
 
   backend = "s3"
 
@@ -29,7 +29,7 @@ data "terraform_remote_state" "data" {
     key    = "dev/data/terraform.tfstate"
     region = "us-east-2"
   }
-}
+} */
 
 terraform {
   backend "s3" {
