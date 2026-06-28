@@ -1,15 +1,15 @@
 locals {
-  asg_tags = merge(var.tags, { Name = var.app_name})
+  asg_tags = merge(var.tags, { Name = var.app_name })
 }
 
 resource "aws_autoscaling_group" "this" {
 
-  name = "${var.app_name}-asg"
-  desired_capacity = var.desired_capacity
-  min_size = var.min_size
-  max_size = var.max_size
+  name                = "${var.app_name}-asg"
+  desired_capacity    = var.desired_capacity
+  min_size            = var.min_size
+  max_size            = var.max_size
   vpc_zone_identifier = var.subnet_ids
-  target_group_arns = var.target_group_arns
+  target_group_arns   = var.target_group_arns
   #tags = 
 
   launch_template {

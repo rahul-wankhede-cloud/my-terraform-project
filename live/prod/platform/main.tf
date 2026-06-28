@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-2" # Replace with your preferred region, e.g., us-west-2
+  region  = "us-east-2" # Replace with your preferred region, e.g., us-west-2
   profile = var.aws_profile
 }
 
@@ -33,9 +33,9 @@ locals {
 
 terraform {
   backend "s3" {
-    bucket = "rahul999-terraform-state"
-    key    = "prod/platform/terraform.tfstate"
-    region = "us-east-2"
+    bucket       = "rahul999-terraform-state"
+    key          = "prod/platform/terraform.tfstate"
+    region       = "us-east-2"
     use_lockfile = true
   }
 }
@@ -43,8 +43,8 @@ terraform {
 module "my_network" {
   source           = "../../../modules/networking"
   environment_name = "Lab"
-  public_subnets = var.public_subnets
-  private_subnets = var.private_subnets
+  public_subnets   = var.public_subnets
+  private_subnets  = var.private_subnets
   vpc_cidr         = "10.0.0.0/16"
 }
 
@@ -52,15 +52,15 @@ module "alb_sg" {
   source = "../../../modules/security-group"
   name   = "alb-sg"
   vpc_id = module.my_network.vpc_id
-  tags = local.common_tags
+  tags   = local.common_tags
 }
 
 module "app_sg" {
   source = "../../../modules/security-group"
   name   = "app-sg"
   vpc_id = module.my_network.vpc_id
-  tags = local.common_tags
-} 
+  tags   = local.common_tags
+}
 
 
 
@@ -68,26 +68,26 @@ module "app_sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "http_to_alb" {
   security_group_id = module.alb_sg.security_group_id
-  cidr_ipv4   = "0.0.0.0/0"
-  ip_protocol = "-1"
-  }
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
+}
 
 resource "aws_vpc_security_group_egress_rule" "alb_to_app" {
-  security_group_id = module.alb_sg.security_group_id
+  security_group_id            = module.alb_sg.security_group_id
   referenced_security_group_id = module.app_sg.security_group_id
-  from_port   = 80
-  ip_protocol = "tcp"
-  to_port     = 80
-  }
+  from_port                    = 80
+  ip_protocol                  = "tcp"
+  to_port                      = 80
+}
 
 
 resource "aws_vpc_security_group_ingress_rule" "alb_to_app" {
-  security_group_id = module.app_sg.security_group_id
+  security_group_id            = module.app_sg.security_group_id
   referenced_security_group_id = module.alb_sg.security_group_id
-  from_port   = 80
-  ip_protocol = "tcp"
-  to_port     = 80
-  }
+  from_port                    = 80
+  ip_protocol                  = "tcp"
+  to_port                      = 80
+}
 
 /* resource "aws_vpc_security_group_egress_rule" "app_to_db" { 
   security_group_id = module.app_sg.security_group_id 
@@ -99,24 +99,24 @@ resource "aws_vpc_security_group_ingress_rule" "alb_to_app" {
 
 resource "aws_vpc_security_group_egress_rule" "app_all_outbound" {
   security_group_id = module.app_sg.security_group_id
-  cidr_ipv4   = "0.0.0.0/0"
-  ip_protocol = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 
 
-  ### ALB module call
- module "alb" {
+### ALB module call
+module "alb" {
   source             = "../../../modules/alb"
-  create = true
+  create             = true
   name               = "main-alb-${var.environment}"
   vpc_id             = module.my_network.vpc_id
-  alb_sg_id         = [module.alb_sg.security_group_id]
+  alb_sg_id          = [module.alb_sg.security_group_id]
   subnets            = module.my_network.public_subnet_ids
   load_balancer_type = "application"
-  tags = local.common_tags
+  tags               = local.common_tags
   #instance_ids = flatten([for m in values(module.web_servers) : m.instance_ids])
   #instance_ids = module.web_servers.instance_ids
-} 
+}
 
 ## Creating EC2 instances
 /* 
@@ -152,28 +152,28 @@ module "web_servers" {
  */
 module "asg" {
 
-  source = "../../../modules/autoscaling-group"
-  app_name = var.app_name
-  subnet_ids = values(module.my_network.private_subnet_ids)
+  source             = "../../../modules/autoscaling-group"
+  app_name           = var.app_name
+  subnet_ids         = values(module.my_network.private_subnet_ids)
   launch_template_id = module.launch_template.launch_template_id
-  target_group_arns = [module.alb.target_group_arn ]
-  desired_capacity = 2
-  min_size = 2
-  max_size = 4
-  
+  target_group_arns  = [module.alb.target_group_arn]
+  desired_capacity   = 2
+  min_size           = 2
+  max_size           = 4
+
   #tags = local.common_tags
 }
 
 module "launch_template" {
 
-  source = "../../../modules/launch_template"
-  app_name = var.app_name
-  ami_id = var.ami_id
-  instance_type = var.instance_type
-  instance_profile_name = module.app_role.instance_profile_name
+  source                 = "../../../modules/launch_template"
+  app_name               = var.app_name
+  ami_id                 = var.ami_id
+  instance_type          = var.instance_type
+  instance_profile_name  = module.app_role.instance_profile_name
   vpc_security_group_ids = [module.app_sg.security_group_id]
-  environment = var.environment
-  user_data = <<-EOF
+  environment            = var.environment
+  user_data              = <<-EOF
               #!/bin/bash
               # Update OS
               yum update -y
@@ -234,28 +234,28 @@ module "launch_template" {
 }
 
 module "app_role" {
-  source = "../../../modules/iam-role"
-  role_name = "app-ec2-role"
+  source          = "../../../modules/iam-role"
+  role_name       = "app-ec2-role"
   trusted_service = "ec2.amazonaws.com"
-  policy_arns = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore","arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
+  policy_arns     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore", "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
 
 }
 
 module "system_logs" {
 
-  source = "../../../modules/cloudwatch-logs"
-  log_group_name = "/aws/ec2/system"
+  source            = "../../../modules/cloudwatch-logs"
+  log_group_name    = "/aws/ec2/system"
   retention_in_days = 30
-  tags = local.common_tags
+  tags              = local.common_tags
 
 }
 
 module "application_logs" {
 
-  source = "../../../modules/cloudwatch-logs"
-  log_group_name = "/aws/ec2/application"
+  source            = "../../../modules/cloudwatch-logs"
+  log_group_name    = "/aws/ec2/application"
   retention_in_days = 30
-  tags = local.common_tags
+  tags              = local.common_tags
 
 }
 
@@ -273,18 +273,18 @@ module "application_logs" {
 
 module "alarms" {
 
-  source = "../../../modules/cloudwatch-alarm"
-  asg_name = module.asg.asg_name
-  alarm_actions = [ module.sns.sns_topic_arn ]
-  tags = local.common_tags
+  source        = "../../../modules/cloudwatch-alarm"
+  asg_name      = module.asg.asg_name
+  alarm_actions = [module.sns.sns_topic_arn]
+  tags          = local.common_tags
 
 }
 
 module "sns" {
 
-  source = "../../../modules/sns"
-  topic_name = "${var.environment}-infrastructure-alerts"
+  source         = "../../../modules/sns"
+  topic_name     = "${var.environment}-infrastructure-alerts"
   email_endpoint = var.notification_email
-  tags = local.common_tags
+  tags           = local.common_tags
 
 }

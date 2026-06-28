@@ -27,7 +27,7 @@ variable "vpc_security_group_ids" {
 
 variable "security_groups" {
   description = "List of security group IDs to associate with the instance"
- type        = string
+  type        = string
 }
 
 variable "vpc_id" {

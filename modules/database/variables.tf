@@ -19,19 +19,19 @@ variable "instance_class" {
 
 variable "subnet_ids" {
   description = "Subnet IDs for the database"
-    type = list(string)
+  type        = list(string)
 }
 
 variable "vpc_security_group_ids" {
   description = "Subnet IDs for the database"
-    type = list(string)
-    default     = []
+  type        = list(string)
+  default     = []
 }
 
 variable "security_group_ids" {
   description = "Subnet IDs for the database"
-    type = list(string)
-    default     = []
+  type        = list(string)
+  default     = []
 }
 
 variable "tags" {
@@ -40,6 +40,6 @@ variable "tags" {
 }
 
 variable "create" {
-  type        = bool
+  type    = bool
   default = false
 }

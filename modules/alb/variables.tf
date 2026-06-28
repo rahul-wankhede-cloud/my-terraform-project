@@ -27,13 +27,13 @@ variable "alb_sg_id" {
   default     = []
 }
 variable "create" {
-  type        = bool
+  type    = bool
   default = false
 }
 
 variable "instance_ids" {
-  type        = list(string)
-  default     = []
+  type    = list(string)
+  default = []
 }
 
 variable "tags" {
@@ -43,4 +43,4 @@ variable "tags" {
 variable "name" {
   type        = string
   description = "Name of ALB"
-  }
+}

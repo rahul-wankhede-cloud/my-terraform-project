@@ -4,8 +4,8 @@ variable "patch_group_name" {
 }
 
 variable "scan_schedule" {
-  type        = string
-  default     = "cron(0 2 ? * SUN *)" # Defaults to Sunday at 2 AM
+  type    = string
+  default = "cron(0 2 ? * SUN *)" # Defaults to Sunday at 2 AM
 }
 
-variable "environment"     { type = string }
+variable "environment" { type = string }

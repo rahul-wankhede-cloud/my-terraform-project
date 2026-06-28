@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-2" # Replace with your preferred region, e.g., us-west-2
+  region  = "us-east-2" # Replace with your preferred region, e.g., us-west-2
   profile = var.aws_profile
 }
 
@@ -33,9 +33,9 @@ data "terraform_remote_state" "platform" {
 
 terraform {
   backend "s3" {
-    bucket = "rahul999-terraform-state"
-    key    = "prod/data/terraform.tfstate"
-    region = "us-east-2"
+    bucket       = "rahul999-terraform-state"
+    key          = "prod/data/terraform.tfstate"
+    region       = "us-east-2"
     use_lockfile = true
   }
 }
@@ -45,7 +45,7 @@ module "db_sg" {
   source = "../../../modules/security-group"
   name   = "db-sg"
   vpc_id = data.terraform_remote_state.platform.outputs.vpc_id
-  tags = local.common_tags
+  tags   = local.common_tags
 }
 
 
@@ -57,23 +57,23 @@ resource "aws_vpc_security_group_egress_rule" "db_all_outbound" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "app_to_db" {
-  security_group_id = module.db_sg.security_group_id
+  security_group_id            = module.db_sg.security_group_id
   referenced_security_group_id = data.terraform_remote_state.platform.outputs.app_sg_id
-  from_port   = 3306
-  ip_protocol = "tcp"
-  to_port     = 3306
-  }
+  from_port                    = 3306
+  ip_protocol                  = "tcp"
+  to_port                      = 3306
+}
 
 
-  module "my_db_instance" {
-  source               = "../../../modules/database"
-  create = true
-  instance_class = var.db_instance_class
-  identifier = var.db_identifier  
-  password = var.db_password
-  username = var.db_username
+module "my_db_instance" {
+  source                 = "../../../modules/database"
+  create                 = true
+  instance_class         = var.db_instance_class
+  identifier             = var.db_identifier
+  password               = var.db_password
+  username               = var.db_username
   vpc_security_group_ids = [module.db_sg.security_group_id]
   #private_subnet_ids  = module.my_network.private_subnet_ids
   subnet_ids = data.terraform_remote_state.platform.outputs.private_subnet_ids
-  tags = local.common_tags
-  }
+  tags       = local.common_tags
+}

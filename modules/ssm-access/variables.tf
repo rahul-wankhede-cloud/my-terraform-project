@@ -19,5 +19,5 @@ variable "groups" {
 variable "target_instance_arn" {
   type        = string
   description = "The ARN of the Bastion host"
-  default = null
+  default     = null
 }

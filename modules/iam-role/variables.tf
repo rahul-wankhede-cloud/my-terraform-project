@@ -6,7 +6,7 @@ variable "role_name" {
 variable "s3_bucket_arn" {
   type        = string
   description = "The ARN of the S3 bucket this role should access"
-  default = null
+  default     = null
 }
 
 variable "trusted_service" {
@@ -22,6 +22,6 @@ variable "create_instance_profile" {
 }
 
 variable "policy_arns" {
-  type = list(string)
+  type    = list(string)
   default = []
 }

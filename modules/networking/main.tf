@@ -1,6 +1,6 @@
 # 1. The VPC
 resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true # Important for EC2 accessibility
 
   tags = {
@@ -33,7 +33,7 @@ resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0" # All traffic...
+    cidr_block = "0.0.0.0/0"                 # All traffic...
     gateway_id = aws_internet_gateway.igw.id # ...goes to the Internet
   }
 
@@ -88,15 +88,15 @@ resource "aws_subnet" "private" {
 #  Request a Public Static IP from AWS
 resource "aws_eip" "nat" {
   domain = "vpc"
-  
+
   tags = {
     Name = "nat-gateway-eip"
   }
 }
 # NAT Gateway
 resource "aws_nat_gateway" "ngw" {
-    allocation_id = aws_eip.nat.id
-    subnet_id = aws_subnet.public["public-1"].id
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public["public-1"].id
 
   tags = {
     Name = "${var.environment_name}-ngw"
@@ -108,7 +108,7 @@ resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0" # All traffic...
+    cidr_block     = "0.0.0.0/0"            # All traffic...
     nat_gateway_id = aws_nat_gateway.ngw.id # ...goes to the Internet
   }
 

@@ -30,8 +30,8 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  name        = "alb-security-group"
-  vpc_id      = var.vpc_id
+  name   = "alb-security-group"
+  vpc_id = var.vpc_id
 
   # Inbound: Allow HTTP from everywhere
   ingress {
@@ -59,13 +59,13 @@ resource "aws_security_group" "db_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description     = "MySQL/Aurora from Web Tier"
-    from_port       = 3306 # Standard port for MySQL/Aurora
-    to_port         = 3306
-    protocol        = "tcp"
-    
+    description = "MySQL/Aurora from Web Tier"
+    from_port   = 3306 # Standard port for MySQL/Aurora
+    to_port     = 3306
+    protocol    = "tcp"
+
     # THE KEY LINE: This allows the Web SG to act as the "Key"
-    security_groups = [aws_security_group.allow_ssh.id] 
+    security_groups = [aws_security_group.allow_ssh.id]
   }
 
   egress {
@@ -84,7 +84,7 @@ resource "aws_security_group" "eice_sg" {
   vpc_id      = var.vpc_id
 
   # Inbound: Leave empty (AWS handles the CLI connection internally)
-  
+
   # Outbound: Allow EICE to talk to your RDS Security Group
   egress {
     from_port       = 3306
@@ -97,22 +97,22 @@ resource "aws_security_group" "eice_sg" {
 }
 
 resource "aws_security_group_rule" "allow_eice_to_rds" {
-  type                     = "ingress"
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.db_sg.id
+  type              = "ingress"
+  from_port         = 3306
+  to_port           = 3306
+  protocol          = "tcp"
+  security_group_id = aws_security_group.db_sg.id
   # This is the 'Source' that was missing!
-  source_security_group_id = aws_security_group.eice_sg.id 
+  source_security_group_id = aws_security_group.eice_sg.id
 }
 
 resource "aws_security_group_rule" "allow_bastion_to_db" {
-  type                     = "ingress"
-  from_port                = 3306
-  to_port                  = 3306
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.db_sg.id # The DB SG
-  
+  type              = "ingress"
+  from_port         = 3306
+  to_port           = 3306
+  protocol          = "tcp"
+  security_group_id = aws_security_group.db_sg.id # The DB SG
+
   # This is the magic part: only allow traffic coming from the Bastion's SG
-  source_security_group_id = var.bastion_security_group_id 
+  source_security_group_id = var.bastion_security_group_id
 }

@@ -9,11 +9,11 @@ output "role_name" {
 output "instance_profile_name" {
   #value       = aws_iam_instance_profile.this.name
   # This returns the first item if created, or null if not.
-  value = try(aws_iam_instance_profile.this[0].name, null)
+  value       = try(aws_iam_instance_profile.this[0].name, null)
   description = "The name of the instance profile to be used with EC2"
 }
 output "instance_profile_arn" {
-  value       = try(aws_iam_instance_profile.this[0].arn,null)
+  value       = try(aws_iam_instance_profile.this[0].arn, null)
   description = "The ARN of the instance profile"
 }
 

@@ -68,9 +68,9 @@ variable "target_groups" {
   type        = list(string)
   default     = []
 }
-variable "aws_region"     { type = string }
-variable "environment"     { type = string }
-variable "project"     { type = string }
+variable "aws_region" { type = string }
+variable "environment" { type = string }
+variable "project" { type = string }
 
 
 
@@ -80,7 +80,7 @@ variable "patch_groups" {
   }))
   default = {
     "Web" = { schedule = "cron(0 2 ? * SUN *)" }
-    "DB" = { schedule = "cron(0 3 ? * SAT *)" }
+    "DB"  = { schedule = "cron(0 3 ? * SAT *)" }
   }
 }
 

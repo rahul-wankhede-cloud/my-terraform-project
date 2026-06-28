@@ -25,8 +25,8 @@ resource "aws_iam_instance_profile" "this" {
   # Logic: If true, create 1. If false, create 0.
   # count = var.create_instance_profile ? 1 : 0
   count = var.trusted_service == "ec2.amazonaws.com" ? 1 : 0
-  name = "${var.role_name}-profile"
-  role = aws_iam_role.this.name
+  name  = "${var.role_name}-profile"
+  role  = aws_iam_role.this.name
 }
 /* 
 resource "aws_iam_role_policy" "s3_custom_access" {

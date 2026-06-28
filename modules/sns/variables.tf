@@ -7,6 +7,6 @@ variable "email_endpoint" {
 }
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }

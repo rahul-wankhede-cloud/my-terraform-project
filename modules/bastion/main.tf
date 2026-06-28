@@ -19,10 +19,10 @@ resource "aws_instance" "bastion" {
 
   #subnet_id            = var.subnet_id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-  
+
 
   tags = {
-    Name = var.instance_name
+    Name       = var.instance_name
     PatchGroup = var.patch_group
   }
 }
@@ -33,8 +33,8 @@ resource "aws_iam_role" "bastion_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
@@ -57,12 +57,12 @@ resource "aws_security_group" "bastion_sg" {
   vpc_id      = var.vpc_id
 
   # Inbound: NONE (SSM doesn't need open ports!)
-  
+
   # Outbound: Talk to RDS
   egress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
     security_groups = [var.security_groups] # Or your specific RDS Subnet
   }
 

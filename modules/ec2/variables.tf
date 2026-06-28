@@ -38,7 +38,7 @@ variable "patch_group" {
 }
 
 variable "create" {
-  type        = bool
+  type    = bool
   default = false
 }
 

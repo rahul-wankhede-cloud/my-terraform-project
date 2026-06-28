@@ -1,11 +1,11 @@
 resource "aws_security_group" "this" {
   name   = var.name
   vpc_id = var.vpc_id
-  tags = merge(var.tags, { Name = var.name})
+  tags   = merge(var.tags, { Name = var.name })
 
 }
 
-  /* dynamic "ingress" {
+/* dynamic "ingress" {
     for_each = var.ingress_rules
 
     content {
