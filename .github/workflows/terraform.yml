@@ -18,16 +18,22 @@ permissions:
 
 jobs:
 
-  validate-platform:
-    name: Validate Platform
+  validate-Platform-and-Data:
+    name: Validate ${{ matrix.stack }}
     runs-on: ubuntu-latest
 
     env:
       ENVIRONMENT: ${{ inputs.environment }}
 
+    strategy:
+      matrix:
+        stack:
+          - platform
+          - data
+
     defaults:
       run:
-        working-directory: live/${{ inputs.environment }}/platform
+        working-directory: live/${{ matrix.stack }}/platform
 
     steps:
       - name: Checkout repository
@@ -51,36 +57,3 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-
-  validate-data:
-    name: Validate Data
-    runs-on: ubuntu-latest
-
-    env:
-      ENVIRONMENT: ${{ inputs.environment }}
-
-    defaults:
-      run:
-        working-directory: live/${{ inputs.environment }}/data
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
-          aws-region: us-east-2
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
