@@ -33,7 +33,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: live/${{ matrix.stack }}/platform
+        working-directory: live/${{ matrix.stack }}
 
     steps:
       - name: Checkout repository
