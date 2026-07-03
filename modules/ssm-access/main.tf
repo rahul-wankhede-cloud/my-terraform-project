@@ -11,7 +11,7 @@ resource "aws_iam_policy" "ssm_tunnel_policy" {
         Action = "ssm:StartSession"
         Resource = [
           var.target_instance_arn,
-          "arn:aws:ssm:${var.aws_region}::document/AWS-StartPortForwardingSessionToRemoteHost"
+          "arn:aws:ssm:${var.var.region}::document/AWS-StartPortForwardingSessionToRemoteHost"
         ]
       },
       {

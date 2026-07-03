@@ -8,8 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-east-2" # Replace with your preferred region, e.g., us-west-2
-  profile = var.aws_profile
+  region  = var.region # Replace with your preferred region, e.g., us-west-2
 }
 
 locals {

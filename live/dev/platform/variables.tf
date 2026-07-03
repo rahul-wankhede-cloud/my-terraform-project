@@ -1,17 +1,6 @@
-variable "target_bucket_name" {
-  description = "The name of our S3 bucket"
-  type        = string
-  default     = "rahulsfirst-bucket-2026"
-}
-
 variable "instance_type" {
   type        = string
   description = "The size of the instance passed to the child module"
-}
-
-variable "aws_profile" {
-  type        = string
-  description = "The AWS profile to use"
 }
 
 variable "ami_id" {
@@ -50,7 +39,7 @@ variable "target_groups" {
   type        = list(string)
   default     = []
 }
-variable "aws_region" { type = string }
+variable "region" { type = string }
 variable "environment" { type = string }
 variable "project" { type = string }
 

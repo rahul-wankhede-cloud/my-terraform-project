@@ -1,5 +1,5 @@
 
-variable "aws_region" {
+variable "var.region" {
   type        = string
   description = "The name of the IAM role to create"
 }

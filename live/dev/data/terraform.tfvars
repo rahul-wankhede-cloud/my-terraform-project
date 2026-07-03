@@ -1,0 +1,5 @@
+db_instance_class     = "db.t3.micro"
+db_identifier         = "app1-rds-dev"
+region                = "us-east-2"
+environment           = "dev"
+project               = "3 tier App"

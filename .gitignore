@@ -5,5 +5,5 @@
 .terraform.lock.hcl
 
 # Ignore variable files containing secrets or local profiles
-*.tfvars
 *.tfvars.json
+*.auto.tfvars
