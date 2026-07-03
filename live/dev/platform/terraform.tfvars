@@ -10,10 +10,10 @@ private_subnets = {
   "private-2" = { cidr = "10.0.4.0/24", az = "us-east-2b" }
 }
 
-region                = "us-east-2"
+region = "us-east-2"
 #target_groups      = []
 #target_users       = ["jane.smith"]
-environment        = "dev"
-app_name           = "test-app"
-ami_id             = "ami-0741dc526e1106ae5"
-project            = "3 tier App"
+environment = "dev"
+app_name    = "test-app"
+ami_id      = "ami-0741dc526e1106ae5"
+project     = "3 tier App"

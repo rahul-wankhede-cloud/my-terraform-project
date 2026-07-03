@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.region # Replace with your preferred region, e.g., us-west-2
-  }
+  region = var.region # Replace with your preferred region, e.g., us-west-2
+}
 
 locals {
   common_tags = {
