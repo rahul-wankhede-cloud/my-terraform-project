@@ -79,7 +79,7 @@ jobs:
         run: terraform init -input=false
 
       - name: Terraform Validate
-        run: terraform validate -input=false
+        run: terraform validate 
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color -out=tfplan
@@ -122,7 +122,7 @@ jobs:
         run: terraform init -input=false
 
       - name: Terraform Validate
-        run: terraform validate -input=false
+        run: terraform validate 
 
       - name: Terraform Plan
         run: terraform plan -input=false -no-color -out=tfplan
