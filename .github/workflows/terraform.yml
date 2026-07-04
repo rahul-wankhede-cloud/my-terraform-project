@@ -55,6 +55,9 @@ jobs:
     needs: fmt
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         
