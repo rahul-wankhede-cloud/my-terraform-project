@@ -117,7 +117,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: platform-tfplan-${{ inputs.environment }}
-          path: platform.tfplan-${{ inputs.environment }}
+          path: live/${{ inputs.environment }}/platform/platform.tfplan-${{ inputs.environment }}
 
 
 # -------------------------
@@ -166,7 +166,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: data-tfplan-${{ inputs.environment }}
-          path: data.tfplan-${{ inputs.environment }}
+          path: live/${{ inputs.environment }}/data/data.tfplan-${{ inputs.environment }}
 
 # -------------------------
 # PLATFORM APPLY JOB 
