@@ -117,7 +117,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: platform-tfplan-${{ inputs.environment }}
-          path: live/${{ inputs.environment }}/platform/platform.tfplan-${{ inputs.environment }}
+          path: platform.tfplan-${{ inputs.environment }}
 
 
 # -------------------------
@@ -166,7 +166,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: data-tfplan-${{ inputs.environment }}
-          path: live/${{ inputs.environment }}/data/data.tfplan-${{ inputs.environment }}
+          path: data.tfplan-${{ inputs.environment }}
 
 # -------------------------
 # PLATFORM APPLY JOB 
@@ -176,6 +176,10 @@ jobs:
     name: Platform Apply (${{ inputs.environment }})
     runs-on: ubuntu-latest
     needs: platform-plan
+
+    defaults:
+      run:
+        working-directory: live/${{ inputs.environment }}/platform
 
     steps:
       - name: Checkout repository
@@ -210,6 +214,10 @@ jobs:
     runs-on: ubuntu-latest
     
     needs: platform-apply
+
+    defaults:
+      run:
+        working-directory: live/${{ inputs.environment }}/data
 
     steps:
       - name: Checkout repository
