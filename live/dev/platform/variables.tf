@@ -23,7 +23,7 @@ variable "private_subnets" {
   description = "Map of private subnets defined in terraform.tfvars"
 }
 
-variable "bastion_instance_type" {
+/* variable "bastion_instance_type" {
   type        = string
   description = "The size of the instance passed to the child module"
 }
@@ -32,20 +32,20 @@ variable "target_users" {
   description = "List of IAM User names"
   type        = list(string)
   default     = []
-}
+} 
 
 variable "target_groups" {
   description = "List of IAM Group names"
   type        = list(string)
   default     = []
-}
+} */
 variable "region" { type = string }
 variable "environment" { type = string }
 variable "project" { type = string }
 
 
 
-variable "patch_groups" {
+/* variable "patch_groups" {
   type = map(object({
     schedule = string
   }))
@@ -58,7 +58,7 @@ variable "patch_groups" {
 variable "instance_count" {
   type        = number
   description = "The number of ec2 servers"
-}
+} */
 
 variable "app_name" {
   type        = string
