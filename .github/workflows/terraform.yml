@@ -198,6 +198,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: platform-tfplan-${{ inputs.environment }}
+          path: live/${{ inputs.environment }}/platform
 
       - name: Terraform Init
         run: terraform init
@@ -236,6 +237,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: data-tfplan-${{ inputs.environment }}
+          path: live/${{ inputs.environment }}/data
 
       - name: Terraform Init
         run: terraform init
