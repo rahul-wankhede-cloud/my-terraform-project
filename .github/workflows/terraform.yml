@@ -109,16 +109,10 @@ jobs:
         working-directory: live/${{ inputs.environment }}/platform
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Terraform Setup
+        uses: ./.github/actions/terraform-setup
         with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
+          aws-role: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
           aws-region: ${{ inputs.region }}
 
       - name: Terraform Init
@@ -145,21 +139,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: platform-plan
 
+    environment: ${{ inputs.environment }}
+
     defaults:
       run:
         working-directory: live/${{ inputs.environment }}/platform
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3  
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Terraform Setup
+        uses: ./.github/actions/terraform-setup
         with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
+          aws-role: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
           aws-region: ${{ inputs.region }}
 
       - name: Download Plan Artifact
@@ -196,16 +186,10 @@ jobs:
         working-directory: live/${{ inputs.environment }}/data
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Terraform Setup
+        uses: ./.github/actions/terraform-setup
         with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
+          aws-role: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
           aws-region: ${{ inputs.region }}
 
       - name: Terraform Init
@@ -234,21 +218,17 @@ jobs:
     
     needs: data-plan
 
+    environment: ${{ inputs.environment }}
+
     defaults:
       run:
         working-directory: live/${{ inputs.environment }}/data
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Terraform Setup
+        uses: ./.github/actions/terraform-setup
         with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
+          aws-role: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
           aws-region: ${{ inputs.region }}
 
       - name: Download Data Artifact

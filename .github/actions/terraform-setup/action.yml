@@ -1,0 +1,30 @@
+name: Terraform Setup
+
+description: Setup Terraform and AWS authentication
+
+inputs:
+  aws-role:
+    description: AWS IAM Role ARN
+    required: true
+
+  aws-region:
+    description: AWS Region
+    required: true
+
+
+runs:
+  using: composite
+
+  steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.aws-role }}
+        aws-region: ${{ inputs.aws-region }}
