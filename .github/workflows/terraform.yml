@@ -72,6 +72,21 @@ jobs:
         working-directory: live/${{ inputs.environment }}/data
         run: tflint
 
+  gitleaks:
+    name: GitLeaks Secret Scan
+    runs-on: ubuntu-latest
+    needs: fmt
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run GitLeaks
+        uses: gitleaks/gitleaks-action@v2
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # -------------------------
 # PLATFORM JOB 
@@ -79,7 +94,9 @@ jobs:
   platform-plan:
     name: Platform Plan (${{ inputs.environment }})
     runs-on: ubuntu-latest
-    needs: tflint
+    needs: 
+      - tflint
+      - gitleaks
 
     environment: ${{ inputs.environment }}
 
@@ -119,6 +136,44 @@ jobs:
           name: platform-tfplan-${{ inputs.environment }}
           path: live/${{ inputs.environment }}/platform/platform.tfplan-${{ inputs.environment }}
 
+# -------------------------
+# PLATFORM APPLY JOB 
+# -------------------------
+
+  platform-apply:
+    name: Platform Apply (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    needs: platform-plan
+
+    defaults:
+      run:
+        working-directory: live/${{ inputs.environment }}/platform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3  
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: platform-tfplan-${{ inputs.environment }}
+          path: live/${{ inputs.environment }}/platform
+
+      - name: Terraform Init
+        run: terraform init
+        
+      - name: Terraform Apply
+        run: terraform apply -auto-approve platform.tfplan-${{ inputs.environment }}
+
 
 # -------------------------
 # DATA JOB (DEPENDS ON PLATFORM)
@@ -127,7 +182,7 @@ jobs:
     name: Data Plan (${{ inputs.environment }})
     runs-on: ubuntu-latest
 
-    needs: platform-plan
+    needs: platform-apply
 
     environment: ${{ inputs.environment }}
 
@@ -168,43 +223,6 @@ jobs:
           name: data-tfplan-${{ inputs.environment }}
           path: live/${{ inputs.environment }}/data/data.tfplan-${{ inputs.environment }}
 
-# -------------------------
-# PLATFORM APPLY JOB 
-# -------------------------
-
-  platform-apply:
-    name: Platform Apply (${{ inputs.environment }})
-    runs-on: ubuntu-latest
-    needs: platform-plan
-
-    defaults:
-      run:
-        working-directory: live/${{ inputs.environment }}/platform
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3  
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_TERRAFORM_ROLE_ARN }}
-          aws-region: ${{ inputs.region }}
-
-      - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: platform-tfplan-${{ inputs.environment }}
-          path: live/${{ inputs.environment }}/platform
-
-      - name: Terraform Init
-        run: terraform init
-        
-      - name: Terraform Apply
-        run: terraform apply -auto-approve platform.tfplan-${{ inputs.environment }}
 
 # -------------------------
 # DATA Apply JOB (DEPENDS ON PLATFORM APPLY)
@@ -214,7 +232,7 @@ jobs:
     name: Data Apply (${{ inputs.environment }})
     runs-on: ubuntu-latest
     
-    needs: platform-apply
+    needs: data-plan
 
     defaults:
       run:

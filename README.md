@@ -149,6 +149,14 @@ my-terraform-project/
     └── route53
 
 ```
+| Tool           | Purpose                |
+| -------------- | ---------------------- |
+| Terraform      | Infrastructure as Code |
+| GitHub Actions | CI/CD                  |
+| AWS OIDC       | Secure authentication  |
+| TFLint         | Terraform linting      |
+| GitLeaks       | Secret detection       |
+| pre-commit     | Local Git hooks        |
 
 ---
 
@@ -429,3 +437,64 @@ terraform apply
 * Git
 
 ---
+## Local Development Setup
+
+### Prerequisites
+
+Install the following tools:
+
+- Git
+- Terraform
+- AWS CLI
+- Python 3.x
+- GitLeaks
+
+### Install GitLeaks
+
+winget install Gitleaks.Gitleaks
+
+Verify the installation:
+
+```bash
+gitleaks version
+```
+
+### Install pre-commit
+
+```bash
+pip install pre-commit
+```
+
+Verify the installation:
+
+```bash
+pre-commit --version
+```
+
+### Install Git Hooks
+
+From the root of the repository:
+
+```bash
+pre-commit install
+```
+
+You should see:
+
+```text
+pre-commit installed at .git/hooks/pre-commit
+```
+
+### Verify the Hooks
+
+Run all configured hooks manually:
+
+```bash
+pre-commit run --all-files
+```
+
+From this point onward, GitLeaks will run automatically every time you execute:
+
+```bash
+git commit
+```
