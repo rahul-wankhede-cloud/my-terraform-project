@@ -109,6 +109,9 @@ jobs:
         working-directory: live/${{ inputs.environment }}/platform
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
       - name: Terraform Setup
         uses: ./.github/actions/terraform-setup
         with:
@@ -146,6 +149,9 @@ jobs:
         working-directory: live/${{ inputs.environment }}/platform
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
       - name: Terraform Setup
         uses: ./.github/actions/terraform-setup
         with:
@@ -186,6 +192,9 @@ jobs:
         working-directory: live/${{ inputs.environment }}/data
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
       - name: Terraform Setup
         uses: ./.github/actions/terraform-setup
         with:
@@ -225,6 +234,9 @@ jobs:
         working-directory: live/${{ inputs.environment }}/data
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
       - name: Terraform Setup
         uses: ./.github/actions/terraform-setup
         with:
