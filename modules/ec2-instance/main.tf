@@ -25,7 +25,7 @@ resource "aws_instance" "this" {
     encrypted = true
   }
 
-   metadata_options {
+  metadata_options {
     http_tokens = "required"
   }
 

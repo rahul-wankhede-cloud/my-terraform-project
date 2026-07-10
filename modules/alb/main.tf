@@ -14,7 +14,7 @@ resource "aws_lb" "main" {
   name               = var.name
   #security_groups    = var.alb_security_group_id
   # This uses the list of subnet IDs we created with the loop!
-  subnets = var.subnets
+  subnets                    = var.subnets
   drop_invalid_header_fields = true
 }
 

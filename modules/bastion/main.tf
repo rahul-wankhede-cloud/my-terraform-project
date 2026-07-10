@@ -19,7 +19,7 @@ resource "aws_instance" "bastion" {
 
   #subnet_id            = var.subnet_id
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-  
+
   root_block_device {
     encrypted = true
   }
