@@ -77,3 +77,15 @@ Decision:
 Fix
 
 Status: Fixed
+
+## AWS-0136 (HIGH): Topic encryption does not use a customer managed key.
+Resource:
+modules/sns/main
+
+Decision:
+Accepted Risk
+
+Reason:
+This is test architecture and the SNS topic does not contain any sensitve information for us to create CMK. The AWS managed key provides encryption at rest which is sufficient for this architecture.
+
+Status: Suppressed

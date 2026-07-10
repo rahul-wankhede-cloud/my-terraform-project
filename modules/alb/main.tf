@@ -26,7 +26,9 @@ resource "aws_lb_target_group" "main" {
   vpc_id   = var.vpc_id
 }
 
+#trivy:ignore:AVD-AWS-0054
 resource "aws_lb_listener" "http" {
+  # This is test architecture and we do not have a valid domain
   count             = local.create ? 1 : 0
   load_balancer_arn = aws_lb.main[0].arn
   port              = "80"

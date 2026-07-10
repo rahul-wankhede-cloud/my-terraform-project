@@ -59,6 +59,7 @@ resource "aws_iam_instance_profile" "bastion_profile" {
 }
 
 # 2. Security Group (The "Shield")
+#trivy:ignore:AVD-AWS-0104
 resource "aws_security_group" "bastion_sg" {
   name        = "bastion-sg"
   description = "Allow SSM and outbound to RDS"

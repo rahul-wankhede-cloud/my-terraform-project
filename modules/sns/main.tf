@@ -1,3 +1,4 @@
+#trivy:ignore:AVD-AWS-0136
 resource "aws_sns_topic" "this" {
   name              = var.topic_name
   kms_master_key_id = "alias/aws/sns"
