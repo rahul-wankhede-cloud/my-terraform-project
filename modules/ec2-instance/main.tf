@@ -21,7 +21,13 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = var.vpc_security_group_ids
   user_data              = var.user_data
 
+  root_block_device {
+    encrypted = true
+  }
 
+   metadata_options {
+    http_tokens = "required"
+  }
 
   tags = {
     Name       = var.instance_name

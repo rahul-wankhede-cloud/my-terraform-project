@@ -1,4 +1,4 @@
-resource "aws_security_group" "allow_ssh" {
+/* resource "aws_security_group" "allow_ssh" {
   name        = "${var.environment_name}-allow-sg"
   description = "Allow SSH inbound traffic"
   vpc_id      = var.vpc_id
@@ -115,4 +115,4 @@ resource "aws_security_group_rule" "allow_bastion_to_db" {
 
   # This is the magic part: only allow traffic coming from the Bastion's SG
   source_security_group_id = var.bastion_security_group_id
-}
+} */

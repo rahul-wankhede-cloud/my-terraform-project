@@ -2,7 +2,10 @@ locals {
   create = var.create
 }
 
+#trivy:ignore:AVD-AWS-0053
 resource "aws_lb" "main" {
+  # This ALB intentionally serves a public web application.
+  # Backend EC2 instances and RDS remain in private subnets.
   count              = local.create ? 1 : 0
   internal           = false
   load_balancer_type = var.load_balancer_type
@@ -12,6 +15,7 @@ resource "aws_lb" "main" {
   #security_groups    = var.alb_security_group_id
   # This uses the list of subnet IDs we created with the loop!
   subnets = var.subnets
+  drop_invalid_header_fields = true
 }
 
 resource "aws_lb_target_group" "main" {
