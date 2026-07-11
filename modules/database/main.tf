@@ -31,10 +31,3 @@ resource "aws_db_subnet_group" "this" {
     Name = "My DB subnet group"
   }
 }
-
-/* resource "aws_ec2_instance_connect_endpoint" "this" {
-  
-  subnet_id          = var.subnet_ids[0]
-  security_group_ids = var.security_group_ids  #[aws_security_group.eice_sg.id]
-  preserve_client_ip = false
-} */

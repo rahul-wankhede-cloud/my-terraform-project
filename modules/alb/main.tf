@@ -40,6 +40,7 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+#Not Needed anymore because of AutoScaling
 /* resource "aws_lb_target_group_attachment" "web_attachment" {
   # 'count' tells Terraform to run this block once for every ID in the list
   count            = length(var.instance_ids)

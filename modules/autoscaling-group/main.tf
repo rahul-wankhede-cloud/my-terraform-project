@@ -10,7 +10,6 @@ resource "aws_autoscaling_group" "this" {
   max_size            = var.max_size
   vpc_zone_identifier = var.subnet_ids
   target_group_arns   = var.target_group_arns
-  #tags = 
 
   launch_template {
 

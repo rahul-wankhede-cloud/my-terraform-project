@@ -28,34 +28,6 @@ resource "aws_iam_instance_profile" "this" {
   name  = "${var.role_name}-profile"
   role  = aws_iam_role.this.name
 }
-/* 
-resource "aws_iam_role_policy" "s3_custom_access" {
-  name = "S3SpecificBucketAccess"
-  role = aws_iam_role.this.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Effect   = "Allow"
-        Resource = [
-          var.s3_bucket_arn,            # The bucket itself (for ListBucket)
-          "${var.s3_bucket_arn}/*"      # The objects inside (for GetObject)
-        ]
-      }
-    ]
-  })
-} */
-
-/* # 1. Attach the standard SSM Managed Policy
-resource "aws_iam_role_policy_attachment" "ssm_core" {
-  role       = aws_iam_role.this.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-} */
 
 resource "aws_iam_role_policy_attachment" "managed" {
 

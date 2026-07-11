@@ -17,7 +17,7 @@ resource "aws_instance" "this" {
   for_each      = local.create ? toset(var.subnet_ids) : toset([])
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
-  #iam_instance_profile = var.iam_instance_profile
+
   # Find the specific subnet ID created by the networking module
   # that matches the current key (e.g., "public-1")
   subnet_id = each.value
